@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# install requirements
+apt-get update && apt-get install -y dialog
+
 # Superuser check
 if [ "$(id -u)" != "0" ]; then
 	dialog --backtitle "Deluge install" --title "Error" --msgbox "To install deluge you need to be root." 0 0
@@ -41,7 +44,7 @@ if dialog --backtitle "$dialogbacktitle" --title "Label movies and series" --yes
 fi
 
 # Run the big install ;)
-apt-get update && dpkg -i ./libtorrent/libtorrent* && apt-get install libboost-all-dev python python-twisted python-openssl python-setuptools intltool python-xdg python-chardet geoip-database python-libtorrent python-notify python-pygame python-glade2 librsvg2-common xdg-utils python-mako && cd ./deluge && python setup.py clean -a && python setup.py build && python setup.py install && python setup.py install_data && cd .. && cp ./daemon/deluge /etc/init.d/deluge && sed -i -e "s#YOUR_USERNAME#${delugeuser}#g" /etc/init.d/deluge && chmod a+x /etc/init.d/deluge && update-rc.d deluge defaults && sudo -u $delugeuser deluged && sleep 10;
+dpkg -i ./libtorrent/libtorrent* && apt-get install -y libboost-all-dev python python-twisted python-openssl python-setuptools intltool python-xdg python-chardet geoip-database python-libtorrent python-notify python-pygame python-glade2 librsvg2-common xdg-utils python-mako && cd ./deluge && python setup.py clean -a && python setup.py build && python setup.py install && python setup.py install_data && cd .. && cp ./daemon/deluge /etc/init.d/deluge && sed -i -e "s#YOUR_USERNAME#${delugeuser}#g" /etc/init.d/deluge && chmod a+x /etc/init.d/deluge && update-rc.d deluge defaults && sudo -u $delugeuser deluged && sleep 10;
 
 sudo -u $delugeuser deluge-console "config -s download_location $delugedownloadpath";
 cp ./deluge-web/web.conf "$delugeconfigpath/web.conf";
